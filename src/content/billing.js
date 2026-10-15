@@ -1,0 +1,63 @@
+export const billing = {
+  title: 'Billing',
+  description: 'Your plan, what you use, and how to change it.',
+  ownerOnly: {
+    title: 'Only owners can see billing',
+    description: 'Ask an account owner to open this page.',
+  },
+  current: {
+    title: 'Current plan',
+    perMonth: 'per month',
+    free: 'Free',
+    usageTitle: 'Usage',
+    monitors: 'Monitors',
+    team: 'Team members',
+    renews: (when) => `Renews ${when}`,
+    subscriptionStatus: 'Subscription',
+  },
+  sampleNotice: {
+    title: 'Sample pricing',
+    description: 'These prices are placeholders while pricing is being finalised. You will not be charged.',
+  },
+  plans: {
+    title: 'Plans',
+    current: 'Current plan',
+    perMonth: '/month',
+    free: 'Free',
+    features: {
+      monitors: (n) => `${n} monitors`,
+      interval: (duration) => `Checks as often as every ${duration}`,
+      timeout: (duration) => `Up to ${duration} timeout`,
+      team: (n) => `${n} team members`,
+    },
+    requestUpgrade: 'Request this plan',
+    requestDowngrade: 'Switch to this plan',
+    upgradeOnline: 'Upgrade',
+    pending: 'Request waiting',
+  },
+  request: {
+    title: (plan) => `Request the ${plan} plan`,
+    description: 'Our team reviews plan changes and will email you once it is done. You can cancel the request until then.',
+    note: 'Note for our team (optional)',
+    notePlaceholder: 'Anything we should know?',
+    submit: 'Send request',
+    sentTitle: 'Request sent',
+    warningsTitle: 'Please note',
+  },
+  pending: {
+    title: (plan) => `Waiting for approval: ${plan}`,
+    description: (when) => `Requested ${when}. We will email you when it has been reviewed.`,
+    cancel: 'Cancel request',
+  },
+  history: {
+    title: 'Plan requests',
+    columns: { when: 'Requested', change: 'Change', status: 'Status', decision: 'Decision' },
+    change: (from, to) => `${from} → ${to}`,
+    empty: 'No plan requests yet.',
+  },
+  toasts: { sent: 'Plan request sent.', canceled: 'Request canceled.' },
+  payment: {
+    success: 'Payment received. Your plan will update shortly.',
+    canceled: 'Payment was canceled.',
+  },
+}

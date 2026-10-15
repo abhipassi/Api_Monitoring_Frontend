@@ -1,0 +1,21 @@
+// Form validation messages.
+export const validation = {
+  required: (field) => `${field} is required`,
+  email: 'Enter a valid email address',
+  minLength: (field, n) => `${field} must be at least ${n} characters`,
+  maxLength: (field, n) => `${field} must be at most ${n} characters`,
+  passwordMin: (n) => `Password must be at least ${n} characters`,
+  passwordsDiffer: 'The two passwords do not match',
+  passwordSame: 'The new password must be different from the current one',
+  url: 'Enter a full address starting with http:// or https://',
+  wholeNumber: (field) => `${field} must be a whole number`,
+  between: (field, min, max) => `${field} must be between ${min} and ${max}`,
+  atLeast: (field, min) => `${field} must be at least ${min}`,
+  atMost: (field, max) => `${field} must be at most ${max}`,
+  timeoutShorter: 'The timeout must be shorter than the check interval',
+  bodyNeedsMethod: 'A request body can only be sent with POST, PUT or PATCH',
+  headerName: 'Header name is required',
+  headerValue: 'Header value is required',
+  headerDuplicate: 'Each header can only be listed once',
+  chooseOne: (field) => `Choose a ${field}`,
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "oxc", "jsx-a11y"],
+  "categories": { "correctness": "error" },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }],
+
+    "react/forbid-dom-props": ["error", { "forbid": ["style"] }],
+    "react/forbid-component-props": ["error", { "forbid": ["style"] }],
+    "react/jsx-no-literals": ["error", { "noStrings": false }],
+    "react/button-has-type": "error",
+    "react/no-danger": "error",
+    "react/jsx-no-target-blank": "error",
+    "react/no-array-index-key": "warn",
+
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "no-console": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.{js,jsx}", "src/test/**"],
+      "rules": { "react/jsx-no-literals": "off", "no-console": "off" }
+    },
+    {
+      "files": ["scripts/**"],
+      "rules": { "no-console": "off" }
+    }
+  ]
+}
