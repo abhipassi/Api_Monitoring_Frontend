@@ -1,10 +1,9 @@
 import { Siren } from 'lucide-react'
 
-import { QueryError } from '@/components/feedback/states.jsx'
 import { Card } from '@/components/ui/Card.jsx'
 import { EmptyState } from '@/components/ui/EmptyState.jsx'
+import { PagedBody } from '@/components/ui/PagedBody.jsx'
 import { PageHeader } from '@/components/ui/PageHeader.jsx'
-import { Pagination } from '@/components/ui/Pagination.jsx'
 import { SegmentedControl } from '@/components/ui/SegmentedControl.jsx'
 import { appConfig } from '@/config/app.js'
 import { searchParams as names } from '@/config/routes.js'
@@ -42,18 +41,13 @@ export default function IncidentsPage() {
         <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
           <SegmentedControl label={text.filters.status} options={statusOptions} value={params[names.status]} onChange={(value) => setParams({ [names.status]: value })} />
         </div>
-        {query.isError && !data ? (
-          <QueryError error={query.error} onRetry={query.refetch} />
-        ) : (
-          <>
+        <PagedBody query={query} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })}>
             <IncidentsTable
               rows={data?.incidents}
               loading={!data}
               empty={<EmptyState icon={Siren} title={filtered ? text.empty.filteredTitle : text.empty.title} description={filtered ? undefined : text.empty.description} />}
             />
-            {data && <Pagination page={data.pagination.page} pages={data.pagination.pages} total={data.pagination.total} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })} />}
-          </>
-        )}
+        </PagedBody>
       </Card>
     </>
   )

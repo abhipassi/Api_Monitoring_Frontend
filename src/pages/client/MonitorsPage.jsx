@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Eye, Gauge, Pause, Pencil, Play, Plus, Trash2 } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 
-import { QueryError } from '@/components/feedback/states.jsx'
 import { useToast } from '@/components/feedback/ToastContext.js'
 import { ActionMenu } from '@/components/ui/ActionMenu.jsx'
 import { Alert } from '@/components/ui/Alert.jsx'
@@ -11,8 +10,8 @@ import { Card } from '@/components/ui/Card.jsx'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog.jsx'
 import { DataTable } from '@/components/ui/DataTable.jsx'
 import { EmptyState } from '@/components/ui/EmptyState.jsx'
+import { PagedBody } from '@/components/ui/PagedBody.jsx'
 import { PageHeader } from '@/components/ui/PageHeader.jsx'
-import { Pagination } from '@/components/ui/Pagination.jsx'
 import { SearchInput } from '@/components/ui/SearchInput.jsx'
 import { SegmentedControl } from '@/components/ui/SegmentedControl.jsx'
 import { appConfig } from '@/config/app.js'
@@ -128,10 +127,7 @@ export default function MonitorsPage() {
           <SegmentedControl label={text.list.statusFilter} options={statusOptions} value={params[names.status]} onChange={(value) => setParams({ [names.status]: value })} />
         </div>
 
-        {query.isError && !data ? (
-          <QueryError error={query.error} onRetry={query.refetch} />
-        ) : (
-          <>
+        <PagedBody query={query} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })}>
             <DataTable
               columns={columns}
               rows={data?.monitors}
@@ -151,9 +147,7 @@ export default function MonitorsPage() {
                 />
               }
             />
-            {data && <Pagination page={data.pagination.page} pages={data.pagination.pages} total={data.pagination.total} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })} />}
-          </>
-        )}
+        </PagedBody>
       </Card>
 
       <ConfirmDialog

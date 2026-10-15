@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Pencil, UserCog, UserPlus } from 'lucide-react'
 
-import { QueryError } from '@/components/feedback/states.jsx'
 import { ActionMenu } from '@/components/ui/ActionMenu.jsx'
 import { Avatar } from '@/components/ui/Avatar.jsx'
 import { Badge, StatusBadge } from '@/components/ui/Badge.jsx'
@@ -10,8 +9,8 @@ import { Card } from '@/components/ui/Card.jsx'
 import { Select } from '@/components/ui/controls.jsx'
 import { DataTable } from '@/components/ui/DataTable.jsx'
 import { EmptyState } from '@/components/ui/EmptyState.jsx'
+import { PagedBody } from '@/components/ui/PagedBody.jsx'
 import { PageHeader } from '@/components/ui/PageHeader.jsx'
-import { Pagination } from '@/components/ui/Pagination.jsx'
 import { SearchInput } from '@/components/ui/SearchInput.jsx'
 import { appConfig } from '@/config/app.js'
 import { searchParams as names } from '@/config/routes.js'
@@ -100,14 +99,9 @@ export default function AdminEmployeesPage() {
             {enums.employeeStatuses.map((status) => <option key={status} value={status}>{content.enums.employeeStatus[status] ?? status}</option>)}
           </Select>
         </div>
-        {query.isError && !data ? (
-          <QueryError error={query.error} onRetry={query.refetch} />
-        ) : (
-          <>
+        <PagedBody query={query} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })}>
             <DataTable columns={columns} rows={data?.employees} loading={!data} empty={<EmptyState icon={UserCog} title={text.empty.title} description={text.empty.description} />} />
-            {data && <Pagination page={data.pagination.page} pages={data.pagination.pages} total={data.pagination.total} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })} />}
-          </>
-        )}
+        </PagedBody>
       </Card>
 
       <EmployeeFormModal key={form.employee?.id ?? 'new'} open={form.open} employee={form.employee} onClose={() => setForm((current) => ({ ...current, open: false }))} />

@@ -1,11 +1,10 @@
 import { FileClock } from 'lucide-react'
 
-import { QueryError } from '@/components/feedback/states.jsx'
 import { Card } from '@/components/ui/Card.jsx'
 import { Select } from '@/components/ui/controls.jsx'
 import { EmptyState } from '@/components/ui/EmptyState.jsx'
+import { PagedBody } from '@/components/ui/PagedBody.jsx'
 import { PageHeader } from '@/components/ui/PageHeader.jsx'
-import { Pagination } from '@/components/ui/Pagination.jsx'
 import { appConfig } from '@/config/app.js'
 import { searchParams as names } from '@/config/routes.js'
 import { content } from '@/content/index.js'
@@ -34,14 +33,9 @@ export default function AdminAuditLogPage() {
             {Object.entries(content.enums.auditTarget).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </Select>
         </div>
-        {query.isError && !data ? (
-          <QueryError error={query.error} onRetry={query.refetch} />
-        ) : (
-          <>
+        <PagedBody query={query} pageSize={appConfig.auditPageSize} onPageChange={(page) => setParams({ [names.page]: page })}>
             <AuditLogTable rows={data?.logs} loading={!data} empty={<EmptyState icon={FileClock} title={text.empty.title} description={text.empty.description} />} />
-            {data && <Pagination page={data.pagination.page} pages={data.pagination.pages} total={data.pagination.total} pageSize={appConfig.auditPageSize} onPageChange={(page) => setParams({ [names.page]: page })} />}
-          </>
-        )}
+        </PagedBody>
       </Card>
     </>
   )

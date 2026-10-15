@@ -1,15 +1,14 @@
 import { Building2 } from 'lucide-react'
 import { Link } from 'react-router'
 
-import { QueryError } from '@/components/feedback/states.jsx'
 import { Badge, StatusBadge } from '@/components/ui/Badge.jsx'
 import { Button } from '@/components/ui/Button.jsx'
 import { Card } from '@/components/ui/Card.jsx'
 import { Select } from '@/components/ui/controls.jsx'
 import { DataTable } from '@/components/ui/DataTable.jsx'
 import { EmptyState } from '@/components/ui/EmptyState.jsx'
+import { PagedBody } from '@/components/ui/PagedBody.jsx'
 import { PageHeader } from '@/components/ui/PageHeader.jsx'
-import { Pagination } from '@/components/ui/Pagination.jsx'
 import { SearchInput } from '@/components/ui/SearchInput.jsx'
 import { appConfig } from '@/config/app.js'
 import { paths, searchParams as names } from '@/config/routes.js'
@@ -66,10 +65,7 @@ export default function AdminCustomersPage() {
             {enums.clientStatuses.map((value) => <option key={value} value={value}>{content.enums.clientStatus[value] ?? value}</option>)}
           </Select>
         </div>
-        {query.isError && !data ? (
-          <QueryError error={query.error} onRetry={query.refetch} />
-        ) : (
-          <>
+        <PagedBody query={query} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })}>
             <DataTable
               columns={columns}
               rows={data?.clients}
@@ -83,9 +79,7 @@ export default function AdminCustomersPage() {
                 />
               }
             />
-            {data && <Pagination page={data.pagination.page} pages={data.pagination.pages} total={data.pagination.total} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })} />}
-          </>
-        )}
+        </PagedBody>
       </Card>
     </>
   )

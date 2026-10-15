@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { ClipboardList } from 'lucide-react'
 import { Link } from 'react-router'
 
-import { QueryError } from '@/components/feedback/states.jsx'
 import { useToast } from '@/components/feedback/ToastContext.js'
 import { ErrorList } from '@/components/ui/Alert.jsx'
 import { StatusBadge } from '@/components/ui/Badge.jsx'
@@ -12,8 +11,8 @@ import { DataTable } from '@/components/ui/DataTable.jsx'
 import { EmptyState } from '@/components/ui/EmptyState.jsx'
 import { TextareaField } from '@/components/ui/fields.jsx'
 import { Modal } from '@/components/ui/Modal.jsx'
+import { PagedBody } from '@/components/ui/PagedBody.jsx'
 import { PageHeader } from '@/components/ui/PageHeader.jsx'
-import { Pagination } from '@/components/ui/Pagination.jsx'
 import { SegmentedControl } from '@/components/ui/SegmentedControl.jsx'
 import { appConfig } from '@/config/app.js'
 import { paths, searchParams as names } from '@/config/routes.js'
@@ -125,14 +124,9 @@ export default function AdminPlanRequestsPage() {
         <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
           <SegmentedControl label={text.filters.status} options={statusOptions} value={params[names.status]} onChange={(value) => setParams({ [names.status]: value })} />
         </div>
-        {query.isError && !data ? (
-          <QueryError error={query.error} onRetry={query.refetch} />
-        ) : (
-          <>
+        <PagedBody query={query} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })}>
             <DataTable columns={columns} rows={data?.requests} loading={!data} empty={<EmptyState icon={ClipboardList} title={text.empty.title} description={text.empty.description} />} />
-            {data && <Pagination page={data.pagination.page} pages={data.pagination.pages} total={data.pagination.total} pageSize={appConfig.pageSize} onPageChange={(page) => setParams({ [names.page]: page })} />}
-          </>
-        )}
+        </PagedBody>
       </Card>
 
       <Modal
