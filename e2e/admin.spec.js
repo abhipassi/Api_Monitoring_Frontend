@@ -15,7 +15,7 @@ const asSuper = async (page) => {
 
 test('staff sign in separately and the super admin sees every section', async ({ page }) => {
   await asSuper(page)
-  for (const label of [nav.dashboard, nav.customers, nav.planRequests, nav.employees, nav.auditLog, nav.account]) {
+  for (const label of [nav.dashboard, nav.customers, nav.planRequests, nav.plans, nav.employees, nav.auditLog, nav.account]) {
     await expect(page.getByRole('link', { name: label })).toBeVisible()
   }
   await expect(page.getByText(content.nav.areaLabel.admin)).toBeVisible()
@@ -62,7 +62,7 @@ test('customers: search, open one, change the plan, and see the change in the au
   const row = page.getByRole('row').filter({ hasText: customer.companyName })
   await expect(row).toBeVisible()
   await expect(page.getByRole('row')).toHaveCount(2)
-  await expect(row.getByText(content.enums.plan.FREE)).toBeVisible()
+  await expect(row.getByText('Free', { exact: true })).toBeVisible()
   await row.getByRole('link', { name: customer.companyName }).click()
 
   await expect(page.getByRole('heading', { name: customer.companyName })).toBeVisible()

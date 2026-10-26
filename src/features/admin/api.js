@@ -25,6 +25,9 @@ export const useAdminClients = (params) =>
 export const useAdminClient = (id) =>
   useQuery({ queryKey: queryKeys.admin.clients.detail(id), queryFn: () => api.get(urls.client(id)) })
 
+export const useAdminPlans = () =>
+  useQuery({ queryKey: queryKeys.admin.plans, queryFn: () => api.get(urls.plans).then((body) => body.plans) })
+
 export const usePlanRequests = (params) =>
   useQuery({
     queryKey: queryKeys.admin.planRequests.list(params),
@@ -75,4 +78,22 @@ export const useCreateEmployee = () => {
 export const useUpdateEmployee = () => {
   const refresh = useRefreshAdmin()
   return useMutation({ mutationFn: ({ id, ...values }) => api.patch(urls.employee(id), values), onSuccess: refresh })
+}
+
+// Plans are also part of the public config the whole site reads (names, prices, limits), so a plan
+// change refreshes that too
+const useRefreshPlans = () => {
+  const queryClient = useQueryClient()
+  const refreshAdmin = useRefreshAdmin()
+  return () => Promise.all([refreshAdmin(), queryClient.invalidateQueries({ queryKey: queryKeys.meta }), queryClient.invalidateQueries({ queryKey: queryKeys.billing })])
+}
+
+export const useCreatePlan = () => {
+  const refresh = useRefreshPlans()
+  return useMutation({ mutationFn: (values) => api.post(urls.plans, values), onSuccess: refresh })
+}
+
+export const useUpdatePlan = () => {
+  const refresh = useRefreshPlans()
+  return useMutation({ mutationFn: ({ key, ...values }) => api.patch(urls.plan(key), values), onSuccess: refresh })
 }

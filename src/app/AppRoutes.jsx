@@ -31,6 +31,7 @@ const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage.j
 const AdminCustomersPage = lazy(() => import('@/pages/admin/AdminCustomersPage.jsx'))
 const AdminCustomerPage = lazy(() => import('@/pages/admin/AdminCustomerPage.jsx'))
 const AdminPlanRequestsPage = lazy(() => import('@/pages/admin/AdminPlanRequestsPage.jsx'))
+const AdminPlansPage = lazy(() => import('@/pages/admin/AdminPlansPage.jsx'))
 const AdminEmployeesPage = lazy(() => import('@/pages/admin/AdminEmployeesPage.jsx'))
 const AdminAuditLogPage = lazy(() => import('@/pages/admin/AdminAuditLogPage.jsx'))
 
@@ -89,6 +90,9 @@ export function AppRoutes() {
             </Route>
             <Route element={<RequirePermission permission="plan-requests.manage" />}>
               <Route path={admin.planRequests} element={<AdminPlanRequestsPage />} />
+            </Route>
+            <Route element={<RequirePermission permission="plans.manage" />}>
+              <Route path={admin.plans} element={<AdminPlansPage />} />
             </Route>
             <Route element={<RequireSuperAdmin />}>
               <Route path={admin.employees} element={<AdminEmployeesPage />} />

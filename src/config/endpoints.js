@@ -49,6 +49,8 @@ export const endpoints = Object.freeze({
     stats: '/api/admin/stats',
     clients: '/api/admin/clients',
     client: (id) => `/api/admin/clients/${id}`,
+    plans: '/api/admin/plans',
+    plan: (key) => `/api/admin/plans/${key}`,
     planRequests: '/api/admin/plan-requests',
     approvePlanRequest: (id) => `/api/admin/plan-requests/${id}/approve`,
     rejectPlanRequest: (id) => `/api/admin/plan-requests/${id}/reject`,

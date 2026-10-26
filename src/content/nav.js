@@ -12,6 +12,7 @@ export const nav = {
     dashboard: 'Overview',
     customers: 'Customers',
     planRequests: 'Plan requests',
+    plans: 'Plans',
     employees: 'Staff',
     auditLog: 'Audit log',
     account: 'Account',

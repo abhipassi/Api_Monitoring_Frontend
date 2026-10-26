@@ -16,7 +16,7 @@ import { useAuth } from '@/features/auth/AuthContext.js'
 import { useBilling, useCancelPlanRequest, useCheckout } from '@/features/billing/api.js'
 import { PlanCard } from '@/features/billing/PlanCard.jsx'
 import { RequestPlanModal } from '@/features/billing/RequestPlanModal.jsx'
-import { useMeta } from '@/features/meta/MetaContext.js'
+import { usePlans } from '@/features/meta/usePlans.js'
 import { usePageTitle } from '@/hooks/usePageTitle.js'
 import { errorMessage } from '@/lib/errors.js'
 import { formatCurrency, formatDate, formatRelative } from '@/lib/format.js'
@@ -26,7 +26,7 @@ const text = content.billing
 export default function BillingPage() {
   usePageTitle(text.title)
   const { isOwner } = useAuth()
-  const { plans } = useMeta()
+  const { plans, nameOf, rankOf } = usePlans()
   const toast = useToast()
   const query = useBilling(isOwner)
   const cancel = useCancelPlanRequest()
@@ -41,7 +41,6 @@ export default function BillingPage() {
 
   const billing = query.data
   const current = billing.plan
-  const rank = (key) => plans.findIndex((plan) => plan.key === key)
 
   const startCheckout = (plan) =>
     checkout.mutate(plan.key, {
@@ -54,7 +53,7 @@ export default function BillingPage() {
     {
       key: 'change',
       header: text.history.columns.change,
-      cell: (row) => text.history.change(content.enums.plan[row.fromPlan] ?? row.fromPlan, content.enums.plan[row.toPlan] ?? row.toPlan),
+      cell: (row) => text.history.change(nameOf(row.fromPlan), nameOf(row.toPlan)),
     },
     { key: 'status', header: text.history.columns.status, cell: (row) => <StatusBadge kind="planRequest" value={row.status} /> },
     { key: 'decision', header: text.history.columns.decision, hideBelow: 'md', cell: (row) => row.decisionNote ?? content.common.placeholder },
@@ -70,7 +69,7 @@ export default function BillingPage() {
         )}
 
         {billing.pendingRequest && (
-          <Alert tone="warning" title={text.pending.title(content.enums.plan[billing.pendingRequest.toPlan] ?? billing.pendingRequest.toPlan)}>
+          <Alert tone="warning" title={text.pending.title(nameOf(billing.pendingRequest.toPlan))}>
             <p>{text.pending.description(formatRelative(billing.pendingRequest.createdAt))}</p>
             <Button
               variant="secondary"
@@ -110,13 +109,14 @@ export default function BillingPage() {
 
         <section aria-labelledby="plans-heading">
           <h2 id="plans-heading" className="mb-4 text-lg font-semibold text-fg">{text.plans.title}</h2>
-          <div className="grid gap-4 md:grid-cols-3">
-            {plans.map((plan) => (
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {/* Archived plans can't be chosen, but the plan you are on is always shown */}
+            {plans.filter((plan) => plan.isActive || plan.key === current.key).map((plan) => (
               <PlanCard
                 key={plan.key}
                 plan={plan}
                 isCurrent={plan.key === current.key}
-                direction={rank(plan.key) > rank(current.key) ? 'UPGRADE' : 'DOWNGRADE'}
+                direction={rankOf(plan.key) > rankOf(current.key) ? 'UPGRADE' : 'DOWNGRADE'}
                 pending={billing.pendingRequest?.toPlan === plan.key}
                 paymentsEnabled={billing.paymentsEnabled}
                 requestDisabled={Boolean(billing.pendingRequest)}

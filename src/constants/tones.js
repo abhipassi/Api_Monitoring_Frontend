@@ -12,7 +12,6 @@ export const statusTones = Object.freeze({
   clientStatus: { ACTIVE: 'success', SUSPENDED: 'danger' },
   planRequest: { PENDING: 'warning', APPROVED: 'success', REJECTED: 'danger', CANCELED: 'neutral' },
   employeeStatus: { ACTIVE: 'success', INACTIVE: 'neutral' },
-  plan: { FREE: 'neutral', STARTER: 'info', ENTERPRISE: 'primary' },
   direction: { UPGRADE: 'success', DOWNGRADE: 'warning' },
 })
 

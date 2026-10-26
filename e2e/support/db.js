@@ -2,7 +2,7 @@ import { createRequire } from 'node:module'
 import { pathToFileURL } from 'node:url'
 import path from 'node:path'
 
-import { EMAIL_DOMAIN, EMAIL_PREFIX, PASSWORD, QUEUE_PREFIX, backendDir } from './env.js'
+import { EMAIL_DOMAIN, EMAIL_PREFIX, PASSWORD, PLAN_KEY_PREFIX, QUEUE_PREFIX, backendDir, e2eMongoUri } from './env.js'
 
 // Test data setup/cleanup talks straight to the Backend's database layer. Only ever touches
 // zz-e2e-*@example.com records and the private Redis prefix.
@@ -15,7 +15,7 @@ const pattern = new RegExp(`^${EMAIL_PREFIX}.*@${EMAIL_DOMAIN.replace('.', '\\.'
 export const withDatabase = async (work) => {
   backendRequire('dotenv').config({ path: path.join(backendDir, '.env'), quiet: true })
   const mongoose = await load('mongoose')
-  await mongoose.connect(process.env.MONGODB_URI)
+  await mongoose.connect(e2eMongoUri())
   const models = {
     Client: await model('clients.js'),
     ClientUser: await model('ClientUser.js'),
@@ -25,6 +25,7 @@ export const withDatabase = async (work) => {
     Incident: await model('Incident.js'),
     PlanRequest: await model('PlanRequest.js'),
     AuditLog: await model('AuditLog.js'),
+    Plan: await model('Plan.js'),
   }
   try {
     return await work({ mongoose, models })
@@ -50,6 +51,7 @@ export const cleanDatabase = () =>
     await models.ClientUser.deleteMany({ $or: [{ clientId: { $in: clientIds } }, { email: pattern }] })
     await models.Client.deleteMany({ _id: { $in: clientIds } })
     await models.Employees.deleteMany({ _id: { $in: employeeIds } })
+    await models.Plan.deleteMany({ key: new RegExp(`^${PLAN_KEY_PREFIX}`) })
   })
 
 export const cleanRedis = async () => {

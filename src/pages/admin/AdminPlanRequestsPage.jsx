@@ -19,6 +19,7 @@ import { paths, searchParams as names } from '@/config/routes.js'
 import { content } from '@/content/index.js'
 import { useDecidePlanRequest, usePlanRequests } from '@/features/admin/api.js'
 import { useMeta } from '@/features/meta/MetaContext.js'
+import { usePlans } from '@/features/meta/usePlans.js'
 import { useListParams } from '@/hooks/useListParams.js'
 import { usePageTitle } from '@/hooks/usePageTitle.js'
 import { formatRelative } from '@/lib/format.js'
@@ -30,6 +31,7 @@ const FORM_ID = 'decide-request-form'
 export default function AdminPlanRequestsPage() {
   usePageTitle(text.title)
   const { enums } = useMeta()
+  const { nameOf: planName } = usePlans()
   const toast = useToast()
   const [params, setParams] = useListParams(DEFAULTS)
   const query = usePlanRequests({ ...params, limit: appConfig.pageSize })
@@ -37,7 +39,6 @@ export default function AdminPlanRequestsPage() {
   const [deciding, setDeciding] = useState(null) // { request, approve }
   const [note, setNote] = useState('')
   const data = query.data
-  const planName = (key) => content.enums.plan[key] ?? key
 
   const open = (request, approve) => {
     decide.reset()

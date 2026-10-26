@@ -9,7 +9,8 @@ import { formatCurrency, formatDuration } from '@/lib/format.js'
 
 const text = content.billing.plans
 
-// One plan in the comparison grid. Its features are written from the plan's limits, never typed.
+// One plan in the comparison grid. The first bullets are written from the plan's limits; the rest are
+// the extra features staff typed in.
 export function PlanCard({ plan, isCurrent, direction, pending, paymentsEnabled, requestDisabled, onRequest, onCheckout, checkoutLoading }) {
   const { limits } = plan
   const features = [
@@ -17,6 +18,8 @@ export function PlanCard({ plan, isCurrent, direction, pending, paymentsEnabled,
     text.features.interval(formatDuration(limits.minIntervalSeconds)),
     text.features.timeout(formatDuration(limits.maxTimeoutSeconds)),
     text.features.team(limits.maxTeamMembers),
+    text.features.retention(limits.retentionDays),
+    ...plan.features,
   ]
   const upgrading = direction === 'UPGRADE'
 
@@ -25,7 +28,10 @@ export function PlanCard({ plan, isCurrent, direction, pending, paymentsEnabled,
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-lg font-semibold text-fg">{plan.name}</h3>
         {isCurrent && <Badge tone="primary">{text.current}</Badge>}
+        {!isCurrent && plan.isRecommended && <Badge tone="success">{text.recommended}</Badge>}
       </div>
+      {plan.description && <p className="mt-1 text-sm text-fg-muted">{plan.description}</p>}
+      {!plan.isActive && <p className="mt-1 text-sm text-warning-fg">{text.archived}</p>}
       <p className="mt-3 flex items-baseline gap-1">
         <span className="text-3xl font-semibold tracking-tight text-fg">{plan.priceMonthly === 0 ? text.free : formatCurrency(plan.priceMonthly, plan.currency)}</span>
         {plan.priceMonthly > 0 && <span className="text-sm text-fg-muted">{text.perMonth}</span>}

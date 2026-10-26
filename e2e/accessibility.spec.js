@@ -65,13 +65,22 @@ for (const scheme of ['light', 'dark']) {
       await audit(page, 'add team member dialog')
     })
 
+    test('the plan form', async ({ page }) => {
+      await signIn(page, staffEmail('Sam Super'), undefined, { admin: true })
+      await expect(page.getByRole('heading', { name: content.admin.dashboard.title })).toBeVisible()
+      await page.goto(paths.admin.plans)
+      await page.getByRole('button', { name: content.admin.plans.new }).click()
+      await expect(page.getByRole('dialog')).toBeVisible()
+      await audit(page, 'plan form')
+    })
+
     test('staff screens', async ({ page }) => {
       const customer = await createCustomer({ tag: uniqueTag('a11ya') })
       await addMonitor({ clientId: customer.clientId, name: 'Staff view API', health: 'UP' })
       await signIn(page, staffEmail('Sam Super'), undefined, { admin: true })
       await expect(page.getByRole('heading', { name: content.admin.dashboard.title })).toBeVisible()
 
-      for (const path of [paths.admin.dashboard, paths.admin.customers, paths.admin.customer(customer.clientId), paths.admin.planRequests, paths.admin.employees, paths.admin.auditLog, paths.admin.account]) {
+      for (const path of [paths.admin.dashboard, paths.admin.customers, paths.admin.customer(customer.clientId), paths.admin.planRequests, paths.admin.plans, paths.admin.employees, paths.admin.auditLog, paths.admin.account]) {
         await page.goto(path)
         await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
         await page.waitForLoadState('networkidle')

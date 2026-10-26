@@ -22,7 +22,8 @@ import { content } from '@/content/index.js'
 import { useAdminClient, useAuditLogs, useUpdateClient } from '@/features/admin/api.js'
 import { AuditLogTable } from '@/features/admin/AuditLogTable.jsx'
 import { useAuth } from '@/features/auth/AuthContext.js'
-import { useMeta } from '@/features/meta/MetaContext.js'
+import { PlanBadge } from '@/features/meta/PlanBadge.jsx'
+import { usePlans } from '@/features/meta/usePlans.js'
 import { usePageTitle } from '@/hooks/usePageTitle.js'
 import { errorMessage } from '@/lib/errors.js'
 import { formatDate, formatNumber, formatRelative } from '@/lib/format.js'
@@ -32,7 +33,7 @@ const text = content.admin.customer
 export default function AdminCustomerPage() {
   const { id } = useParams()
   const { can } = useAuth()
-  const { plans } = useMeta()
+  const { plans, nameOf: planName } = usePlans()
   const toast = useToast()
   const query = useAdminClient(id)
   const update = useUpdateClient()
@@ -58,7 +59,6 @@ export default function AdminCustomerPage() {
   const selectedPlan = chosenPlan ?? client.plan
   const suspended = client.status === 'SUSPENDED'
   const displayName = client.companyName ?? client.name
-  const planName = (key) => content.enums.plan[key] ?? key
 
   const run = (values, message) =>
     update.mutate(
@@ -98,7 +98,7 @@ export default function AdminCustomerPage() {
     { label: text.fields.contact, value: client.name },
     { label: text.fields.email, value: client.email },
     { label: text.fields.joined, value: formatDate(client.createdAt) },
-    { label: text.fields.subscription, value: <StatusBadge kind="plan" value={client.plan} dot={false} /> },
+    { label: text.fields.subscription, value: <PlanBadge planKey={client.plan} /> },
     { label: text.fields.incidents, value: formatNumber(openIncidents) },
   ]
 
@@ -169,7 +169,8 @@ export default function AdminCustomerPage() {
 
               <div className="flex flex-col gap-3">
                 <SelectField label={text.manage.planLabel} hint={text.manage.planHint} value={selectedPlan} disabled={!canManage} onChange={(event) => setChosenPlan(event.target.value)}>
-                  {plans.map((plan) => <option key={plan.key} value={plan.key}>{plan.name}</option>)}
+                  {/* Only available plans can be handed out; an archived plan stays selectable for the customer already on it */}
+                  {plans.filter((plan) => plan.isActive || plan.key === client.plan).map((plan) => <option key={plan.key} value={plan.key}>{plan.name}</option>)}
                 </SelectField>
                 <Button
                   variant="secondary"

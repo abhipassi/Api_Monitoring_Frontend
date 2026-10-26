@@ -18,6 +18,7 @@ export const queryKeys = Object.freeze({
   admin: {
     stats: ['admin', 'stats'],
     clients: { all: ['admin', 'clients'], list: (params) => ['admin', 'clients', 'list', params], detail: (id) => ['admin', 'clients', 'detail', id] },
+    plans: ['admin', 'plans'],
     planRequests: { all: ['admin', 'plan-requests'], list: (params) => ['admin', 'plan-requests', 'list', params] },
     employees: { all: ['admin', 'employees'], list: (params) => ['admin', 'employees', 'list', params] },
     auditLogs: (params) => ['admin', 'audit-logs', params],

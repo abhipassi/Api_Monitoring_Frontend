@@ -2,12 +2,14 @@ import { Badge } from '@/components/ui/Badge.jsx'
 import { DataTable } from '@/components/ui/DataTable.jsx'
 import { content } from '@/content/index.js'
 import { formatDateTime, humanize } from '@/lib/format.js'
+import { usePlans } from '@/features/meta/usePlans.js'
 import { actionLabel, describeChanges } from './auditFormat.js'
 
 const text = content.admin.audit
 
 // Used on the Audit log page and in a customer's "recent changes"
 export function AuditLogTable({ rows, loading, empty, compact = false }) {
+  const { nameOf } = usePlans()
   const columns = [
     { key: 'when', header: text.columns.when, cell: (row) => formatDateTime(row.createdAt) },
     {
@@ -36,7 +38,7 @@ export function AuditLogTable({ rows, loading, empty, compact = false }) {
       key: 'changes',
       header: text.columns.changes,
       cell: (row) => {
-        const lines = describeChanges(row.changes)
+        const lines = describeChanges(row.changes, nameOf)
         return lines.length ? (
           <ul className="space-y-0.5 text-sm text-fg-muted">{lines.map((line) => <li key={line}>{line}</li>)}</ul>
         ) : (

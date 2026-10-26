@@ -9,6 +9,7 @@ export const validation = {
   passwordSame: 'The new password must be different from the current one',
   url: 'Enter a full address starting with http:// or https://',
   wholeNumber: (field) => `${field} must be a whole number`,
+  number: (field) => `${field} must be a number`,
   between: (field, min, max) => `${field} must be between ${min} and ${max}`,
   atLeast: (field, min) => `${field} must be at least ${min}`,
   atMost: (field, max) => `${field} must be at most ${max}`,

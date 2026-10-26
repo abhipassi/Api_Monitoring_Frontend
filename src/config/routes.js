@@ -27,6 +27,7 @@ const admin = {
   customers: `${adminBase}/customers`,
   customer: (id) => `${adminBase}/customers/${id}`,
   planRequests: `${adminBase}/plan-requests`,
+  plans: `${adminBase}/plans`,
   employees: `${adminBase}/employees`,
   auditLog: `${adminBase}/audit-log`,
   account: `${adminBase}/account`,

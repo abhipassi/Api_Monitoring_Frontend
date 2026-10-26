@@ -15,6 +15,7 @@ import { paths, searchParams as names } from '@/config/routes.js'
 import { content } from '@/content/index.js'
 import { useAdminClients } from '@/features/admin/api.js'
 import { useMeta } from '@/features/meta/MetaContext.js'
+import { PlanBadge } from '@/features/meta/PlanBadge.jsx'
 import { useListParams } from '@/hooks/useListParams.js'
 import { usePageTitle } from '@/hooks/usePageTitle.js'
 import { formatDate, formatNumber } from '@/lib/format.js'
@@ -43,7 +44,7 @@ export default function AdminCustomersPage() {
         </div>
       ),
     },
-    { key: 'plan', header: text.columns.plan, cell: (row) => <StatusBadge kind="plan" value={row.plan} dot={false} /> },
+    { key: 'plan', header: text.columns.plan, cell: (row) => <PlanBadge planKey={row.plan} /> },
     { key: 'status', header: text.columns.status, cell: (row) => <StatusBadge kind="clientStatus" value={row.status} /> },
     { key: 'monitors', header: text.columns.monitors, align: 'right', hideBelow: 'sm', cell: (row) => formatNumber(row.monitorCount) },
     { key: 'people', header: text.columns.people, align: 'right', hideBelow: 'md', cell: (row) => formatNumber(row.activeUserCount) },

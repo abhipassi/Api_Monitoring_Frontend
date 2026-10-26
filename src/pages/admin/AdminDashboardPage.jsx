@@ -2,7 +2,6 @@ import { ArrowRight, Building2, ClipboardList, Gauge, ListChecks, Siren, Users, 
 import { Link } from 'react-router'
 
 import { QueryError } from '@/components/feedback/states.jsx'
-import { StatusBadge } from '@/components/ui/Badge.jsx'
 import { Card, CardBody, CardHeader } from '@/components/ui/Card.jsx'
 import { PageHeader } from '@/components/ui/PageHeader.jsx'
 import { StatCard } from '@/components/ui/StatCard.jsx'
@@ -11,6 +10,7 @@ import { content } from '@/content/index.js'
 import { useAuth } from '@/features/auth/AuthContext.js'
 import { useAdminStats } from '@/features/admin/api.js'
 import { useMeta } from '@/features/meta/MetaContext.js'
+import { PlanBadge } from '@/features/meta/PlanBadge.jsx'
 import { usePageTitle } from '@/hooks/usePageTitle.js'
 import { formatCurrency, formatNumber } from '@/lib/format.js'
 
@@ -62,9 +62,10 @@ export default function AdminDashboardPage() {
             <CardHeader title={text.byPlan.title} />
             <CardBody>
               <ul className="divide-y divide-line">
-                {plans.map((plan) => (
+                {/* Archived plans only appear while someone is still on them */}
+                {plans.filter((plan) => plan.isActive || stats?.clients.byPlan[plan.key] > 0).map((plan) => (
                   <li key={plan.key} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
-                    <StatusBadge kind="plan" value={plan.key} dot={false} />
+                    <PlanBadge planKey={plan.key} />
                     <span className="text-sm font-medium text-fg">{formatNumber(stats?.clients.byPlan[plan.key])}</span>
                   </li>
                 ))}

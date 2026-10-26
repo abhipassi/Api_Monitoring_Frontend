@@ -70,7 +70,7 @@ test('main customer pages never scroll sideways', async ({ page }) => {
 test('main staff pages never scroll sideways', async ({ page }) => {
   const customer = await createCustomer({ tag: uniqueTag('mobadm') })
   await signIn(page, staffEmail('Sam Super'), undefined, { admin: true })
-  for (const path of [paths.admin.dashboard, paths.admin.customers, paths.admin.customer(customer.clientId), paths.admin.planRequests, paths.admin.employees, paths.admin.auditLog]) {
+  for (const path of [paths.admin.dashboard, paths.admin.customers, paths.admin.customer(customer.clientId), paths.admin.planRequests, paths.admin.plans, paths.admin.employees, paths.admin.auditLog]) {
     await page.goto(path)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expectNoSidewaysScroll(page)
